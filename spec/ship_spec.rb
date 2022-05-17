@@ -33,13 +33,13 @@ RSpec.describe Ship do
     expect(@cruiser.health).to equal(2)
   end
 
-  xit "has been hit twice" do
+  it "has been hit twice" do
     2.times do @cruiser.hit end
     expect(@cruiser.health).to equal(1)
     expect(@cruiser.sunk?).to equal(false)
   end
 
-  xit "has been hit three times" do
+  it "has been hit three times" do
     3.times do @cruiser.hit end
     expect(@cruiser.health).to equal(0)
     expect(@cruiser.sunk?).to equal(true)
