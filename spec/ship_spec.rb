@@ -1,3 +1,4 @@
+require "pry"
 require './lib/ship'
 
 RSpec.describe Ship do
@@ -23,10 +24,11 @@ RSpec.describe Ship do
   end
 
   it "indicates if it has been sunk" do
+    # binding.pry
     expect(@cruiser.sunk?).to eq(false)
   end
 
-  xit "has been hit once" do
+  it "has been hit once" do
     @cruiser.hit
     expect(@cruiser.health).to equal(2)
   end

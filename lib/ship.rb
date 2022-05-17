@@ -11,4 +11,9 @@ class Ship
   def sunk?
     false
   end
+
+  def hit
+    @length -= 1
+    @health -= 1
+  end
 end
