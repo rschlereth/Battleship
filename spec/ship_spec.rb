@@ -18,7 +18,7 @@ RSpec.describe Ship do
   end
 
   # change name once code is created
-  xit "has health" do
+  it "has health" do
     expect(@cruiser.health).to eq(3)
   end
 
