@@ -65,7 +65,7 @@ RSpec.describe Cell do
     expect(@cell.render(true)).to eq("S")
   end
 
-  it "shows a ship" do
+  it "shows a hit" do
     cruiser = Ship.new("Cruiser", 3)
     @cell.place_ship(cruiser)
     @cell.fire_upon
@@ -77,7 +77,7 @@ RSpec.describe Cell do
     cruiser = Ship.new("Cruiser", 3)
     @cell.place_ship(cruiser)
     @cell.fire_upon
-    2.times do cruiser.hit
+    2.times do cruiser.hit end
     expect(cruiser.sunk?).to eq(true)
     expect(@cell.render).to eq("X")
   end
