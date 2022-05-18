@@ -41,11 +41,12 @@ RSpec.describe Cell do
     expect(@cell.fired_upon?).to eq(false)
   end
 
-  it "has not been fired upon by default" do
+  it "has been fired upon" do
     cruiser = Ship.new("Cruiser", 3)
-    @cell.place_ship(cruiser
+    @cell.place_ship(cruiser)
     @cell.fire_upon
+
     expect(@cell.ship.health).to eq(2)
-    expect(@cell.fired_upon?).to eq(true)    
+    expect(@cell.fired_upon?).to eq(true)
   end
 end
