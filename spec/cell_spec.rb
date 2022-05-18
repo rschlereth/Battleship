@@ -45,8 +45,40 @@ RSpec.describe Cell do
     cruiser = Ship.new("Cruiser", 3)
     @cell.place_ship(cruiser)
     @cell.fire_upon
-
     expect(@cell.ship.health).to eq(2)
     expect(@cell.fired_upon?).to eq(true)
+  end
+
+  it "renders a period if not fired upon" do
+    expect(@cell.render).to eq(".")
+  end
+
+  it "renders a letter M if fired upon but does not contain a ship" do
+    @cell.fire_upon
+    expect(@cell.render).to eq("M")
+  end
+
+  it "shows a ship" do
+    cruiser = Ship.new("Cruiser", 3)
+    @cell.place_ship(cruiser)
+    expect(@cell.render).to eq(".")
+    expect(@cell.render(true)).to eq("S")
+  end
+
+  it "shows a ship" do
+    cruiser = Ship.new("Cruiser", 3)
+    @cell.place_ship(cruiser)
+    @cell.fire_upon
+    expect(@cell.render).to eq("H")
+    expect(cruiser.sunk?).to eq(false)
+  end
+
+  it "shows a ship" do
+    cruiser = Ship.new("Cruiser", 3)
+    @cell.place_ship(cruiser)
+    @cell.fire_upon
+    2.times do cruiser.hit
+    expect(cruiser.sunk?).to eq(true)
+    expect(@cell.render).to eq("X")
   end
 end
