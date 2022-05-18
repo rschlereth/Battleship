@@ -55,18 +55,17 @@ RSpec.describe Cell do
 
   it "renders a letter M if fired upon but does not contain a ship" do
     @cell.fire_upon
-    binding.pry 
     expect(@cell.render).to eq("M")
   end
 
-  xit "shows a ship" do
+  it "shows a ship" do
     cruiser = Ship.new("Cruiser", 3)
     @cell.place_ship(cruiser)
     expect(@cell.render).to eq(".")
     expect(@cell.render(true)).to eq("S")
   end
 
-  xit "shows a ship" do
+  it "shows a hit" do
     cruiser = Ship.new("Cruiser", 3)
     @cell.place_ship(cruiser)
     @cell.fire_upon
@@ -74,7 +73,7 @@ RSpec.describe Cell do
     expect(cruiser.sunk?).to eq(false)
   end
 
-  xit "shows a ship" do
+  it "shows a ship" do
     cruiser = Ship.new("Cruiser", 3)
     @cell.place_ship(cruiser)
     @cell.fire_upon

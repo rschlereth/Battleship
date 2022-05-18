@@ -42,13 +42,23 @@ class Cell
     #if no ship in cell, then miss
   end
 
-  def render
+  def render(trigger = false)
+    if trigger == true
+      if empty? == false
+        return "S"
+      end
     # if fired_upon_the_cell? is false, then it renders "."
-    if fired_upon? == false
+    elsif fired_upon? == false
       return "."
     # if fired_upon? is true and no ship, then renders "M"
     elsif fired_upon? == true && empty? == true
       return "M"
+    # if the cell has a ship, has been fired upon, AND the ship has sunk, then render "X"
+  elsif fired_upon? == true && empty? == false && @ship.health == 0
+    return "X"
+    # if the cell has a ship and is fired upon, then it renders "H"
+    elsif fired_upon? == true && empty? == false
+      return "H"
     end
   end
 end
