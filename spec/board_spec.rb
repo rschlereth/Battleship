@@ -16,4 +16,13 @@ RSpec.describe Board do
     expect(@board.cells.count).to eq(16)
     expect(@board.cells["A2"]).to be_an_instance_of(Cell)
   end
+
+  it "has valid coordinates" do
+    expect(@board.valid_coordinate?("A1")).to eq(true)
+    expect(@board.valid_coordinate?("D4")).to eq(true)
+    expect(@board.valid_coordinate?("A5")).to eq(false)
+    expect(@board.valid_coordinate?("E1")).to eq(false)
+    expect(@board.valid_coordinate?("A22")).to eq(false)
+  end
+
 end
