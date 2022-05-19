@@ -27,11 +27,38 @@ class Board
   end
 
   def valid_placement?(ship, coordinates)
-    ship.length == coordinates.count
+    if ship.length != coordinates.count
+      return false
+    else
+        coordinates.each_cons(2).all? do |coordinate|
+          dif = coordinate[0].ord - coordinate[1].ord
+          if dif == 0
+            coordinates.each_cons(2).all? do |coordinate|
+            dif2 = coordinate[0].slice(0).to_i - coordinate[1].slice(0).to_i
+            if dif2 == -1
+              return true
+            else
+              return false
+            end
+          end
+        elsif dif == -1
+          coordinates.each_cons(2).all? do |coordinate|
+            dif2 = coordinate[0].slice(0).to_i - coordinate[1].slice(0).to_i
+            if dif2 == 0
+              return true
+            else
+              return false
+            end
+          end
+        else
+          return false
+        end
+    end
+  end
 
-    coordinates.each do |coordinate|
-      coordinate.split("")
-      binding.pry
+    coordinates.each_cons(2).all? do |coordinate|
+      dif2 = coordinate[0].slice(0).to_i - coordinate[1].slice(0).to_i
+      dif2 == 0 || dif2 == -1
     end
   end
 end
