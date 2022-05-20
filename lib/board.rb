@@ -54,4 +54,7 @@ class Board
     end
     true if valid_pair == coordinates.count - 1
   end
+
+  def place(ship, coordinates)
+
 end
