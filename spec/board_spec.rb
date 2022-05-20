@@ -79,9 +79,9 @@ RSpec.describe Board do
   it "checks for overlapping ships" do
     cruiser = Ship.new("Cruiser", 3)
     @board.place(cruiser, ["A1", "A2", "A3"])
-
+    binding.pry
     submarine = Ship.new("Submarine", 2)
 
-    expect(board.valid_placement?(submarine, ["A1", "B1"])
+    expect(@board.valid_placement?(submarine, ["A1", "B1"])).to equal(false)
   end
 end
