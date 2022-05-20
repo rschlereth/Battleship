@@ -43,6 +43,7 @@ class Board
       coordinates.each do |coordinate|
         if @cells[coordinate].empty? != true
           return false
+        binding.pry
         end
       end
     else
