@@ -56,5 +56,10 @@ class Board
   end
 
   def place(ship, coordinates)
+    # take each coordinate and place a ship in them
+    coordinates.each do |coordinate|
+      @cells[coordinate].place_ship(ship)
+    end
+  end
 
 end
