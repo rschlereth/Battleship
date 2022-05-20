@@ -40,13 +40,6 @@ class Board
     if ship.length != coordinates.count
       return false
     elsif
-      coordinates.each do |coordinate|
-        if @cells[coordinate].empty? != true
-          return false
-        binding.pry
-        end
-      end
-    else
       coordinates.each_cons(2) do |cd1, cd2|
         if compare_letters(cd1, cd2) != 0 && compare_letters(cd1, cd2) != -1
           return false
@@ -56,6 +49,12 @@ class Board
           return false
         else
           valid_pair += 1
+        end
+      end
+    else
+      coordinates.each do |coordinate|
+        if @cells[coordinate].empty? == false
+          return false
         end
       end
     end
