@@ -55,7 +55,7 @@ class Round
       if @board_player.valid_placement?(cruiser_p1, cruiser_coords_p1)
         @board_player.place(cruiser_p1, cruiser_coords_p1)
         valid_placement += 1
-        @board_player.render_board
+        @board_player.render_board(true)
         binding.pry
       else
         puts "Your entered squares for Cruiser are invalid. Please try again and enter 3 squares for the Cruiser, separated by spaces (Example: A1 A2 A3):"
@@ -70,24 +70,25 @@ class Round
       if @board_player.valid_placement?(submarine_p1, submarine_coords_p1)
         @board_player.place(submarine_p1, submarine_coords_p1)
         valid_placement += 1
-        @board_player.render_board
+        @board_player.render_board(true)
         binding.pry
       else
         puts "Your entered squares for Submarine are invalid. Please try again and enter 2 squares for the Submarine, separated by spaces (Example: A1 A2):"
         submarine_coords_p1 = gets.strip.gsub(",", "").upcase.split(" ")
-    end
-
-
-    until valid_placement == 2
-      if @board_computer.valid_placement?(cruiser, @cruiser_coords)
-        @board_computer.place(cruiser, @cruiser_coords)
-        valid_placement += 1
-        binding.pry
-      else
-        @cruiser_coords = computer_placement(cruiser)
-        binding.pry
       end
     end
+
+    #
+    # until valid_placement == 2
+    #   if @board_computer.valid_placement?(cruiser, @cruiser_coords)
+    #     @board_computer.place(cruiser, @cruiser_coords)
+    #     valid_placement += 1
+    #     binding.pry
+    #   else
+    #     @cruiser_coords = computer_placement(cruiser)
+    #     binding.pry
+    #   end
+    # end
 
 
 
