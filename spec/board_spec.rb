@@ -44,7 +44,7 @@ RSpec.describe Board do
     expect(@board.valid_placement?(submarine, ["C1", "B1"])).to equal(false)
   end
 
-  xit "has coordinates that can't be diagonal" do
+  it "has coordinates that can't be diagonal" do
     cruiser = Ship.new("Cruiser", 3)
     submarine = Ship.new("Submarine", 2)
 
@@ -52,7 +52,7 @@ RSpec.describe Board do
     expect(@board.valid_placement?(submarine, ["C2", "D3"])).to equal(false)
   end
 
-  xit "has a valid placement" do
+  it "has a valid placement" do
     cruiser = Ship.new("Cruiser", 3)
     submarine = Ship.new("Submarine", 2)
 
@@ -60,7 +60,7 @@ RSpec.describe Board do
     expect(@board.valid_placement?(cruiser, ["B1", "C1", "D1"])).to equal(true)
   end
 
-  xit "can place ships" do
+  it "can place ships" do
     cruiser = Ship.new("Cruiser", 3)
     @board.place(cruiser, ["A1", "A2", "A3"])
     cell_1 = @board.cells["A1"]
@@ -76,7 +76,7 @@ RSpec.describe Board do
     expect(cell_3.ship).to equal(cell_2.ship)
   end
 
-  xit "checks for overlapping ships" do
+  it "checks for overlapping ships" do
     cruiser = Ship.new("Cruiser", 3)
     @board.place(cruiser, ["A1", "A2", "A3"])
     submarine = Ship.new("Submarine", 2)
