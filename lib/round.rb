@@ -32,23 +32,20 @@ class Round
         if @board_computer.valid_placement?(cruiser_c, @cruiser_coords_c)
           @board_computer.place(cruiser_c, @cruiser_coords_c)
           valid_placement += 1
-          binding.pry
         else
           @cruiser_coords_c = computer_placement(cruiser_c)
-          binding.pry
         end
       end
-      binding.pry
     else
-      puts "Womp womp invalid letter :(\n"
+      puts "Womp womp invalid letter :(\n\n"
       start
     end
 
     # Player Ship Placement
     puts "I have laid out my ships on the grid.\nYou now need to lay out your two ships.\nThe Cruiser is three units long and the Submarine is two units long."
     @board_player.render_board
-    puts "Enter the squares for the Cruiser (3 spaces):"
-    cruiser_coords_p1 = gets.strip.upcase.split(" ")
+    puts "Enter the 3 squares for the Cruiser, separated by spaces:"
+    cruiser_coords_p1 = gets.strip.gsub(",", "").upcase.split(" ")
     binding.pry
 
     cruiser_p1 = Ship.new("Cruiser", 3)
@@ -56,14 +53,17 @@ class Round
     valid_placement = 0
     until valid_placement == 1
       if @board_player.valid_placement?(cruiser_p1, cruiser_coords_p1)
-        @board_player.place(cruiser_p1, @submarine_coords)
+        @board_player.place(cruiser_p1, cruiser_coords_p1)
         valid_placement += 1
+        @board_player
         binding.pry
       else
-        @submarine_coords = computer_placement(submarine)
-        binding.pry
+        puts "Your entered coordinates are invalid. Please try again:"
+        cruiser_coords_p1 = gets.strip.gsub(",", "").upcase.split(" ")
       end
     end
+
+
     until valid_placement == 2
       if @board_computer.valid_placement?(cruiser, @cruiser_coords)
         @board_computer.place(cruiser, @cruiser_coords)
@@ -84,12 +84,13 @@ class Round
     letters = ["A", "B", "C", "D"]
     nums = ["1", "2", "3", "4"]
     coordinates << letters.sample + nums.sample
+    #["B2"], r1 = 0, ship.length = 2
     cell_index = 0
     r1 = [0, 1].sample
     until coordinates.count == ship.length
       if r1 == 0 && coordinates[cell_index][1..-1].to_i < 4
-        num = coordinates[cell_index][1..-1].to_i + 1
-        coordinates << coordinates[cell_index][0] + num.to_s
+        num = coordinates[cell_index][1..-1].to_i + 1 # coordinates = ["B2"] num = 2 + 1 = 3
+        coordinates << coordinates[cell_index][0] + num.to_s # "B" + "3" => "B3" coordinates = ["B2", "B3"]
         cell_index += 1
       elsif r1 == 0 && coordinates[cell_index][1..-1].to_i == 4
         coordinates.clear
