@@ -22,10 +22,8 @@ class Round
         if @board_computer.valid_placement?(submarine_c, @submarine_coords_c)
           @board_computer.place(submarine_c, @submarine_coords_c)
           valid_placement += 1
-          binding.pry
         else
           @submarine_coords_c = computer_placement(submarine_c)
-          binding.pry
         end
       end
       until valid_placement == 2
@@ -46,7 +44,6 @@ class Round
     @board_player.render_board
     puts "Enter the 3 squares for the Cruiser, separated by spaces:"
     cruiser_coords_p1 = gets.strip.gsub(",", "").upcase.split(" ")
-    binding.pry
 
     cruiser_p1 = Ship.new("Cruiser", 3)
     submarine_p1 = Ship.new("Submarine", 2)
@@ -56,7 +53,6 @@ class Round
         @board_player.place(cruiser_p1, cruiser_coords_p1)
         valid_placement += 1
         @board_player.render_board(true)
-        binding.pry
       else
         puts "Your entered squares for Cruiser are invalid. Please try again and enter 3 squares for the Cruiser, separated by spaces (Example: A1 A2 A3):"
         cruiser_coords_p1 = gets.strip.gsub(",", "").upcase.split(" ")
@@ -71,24 +67,35 @@ class Round
         @board_player.place(submarine_p1, submarine_coords_p1)
         valid_placement += 1
         @board_player.render_board(true)
-        binding.pry
       else
         puts "Your entered squares for Submarine are invalid. Please try again and enter 2 squares for the Submarine, separated by spaces (Example: A1 A2):"
         submarine_coords_p1 = gets.strip.gsub(",", "").upcase.split(" ")
       end
     end
 
-    #
-    # until valid_placement == 2
-    #   if @board_computer.valid_placement?(cruiser, @cruiser_coords)
-    #     @board_computer.place(cruiser, @cruiser_coords)
-    #     valid_placement += 1
-    #     binding.pry
-    #   else
-    #     @cruiser_coords = computer_placement(cruiser)
-    #     binding.pry
-    #   end
-    # end
+    # Displaying the Boards
+    puts "=============COMPUTER BOARD=============\n"
+    @board_computer.render_board
+    puts "==============PLAYER BOARD==============\n"
+    @board_player.render_board(true)
+
+    # Player guesses square
+    puts "Enter the square for your shot:"
+    player_guess = gets.strip.gsub(",", "").upcase
+    guess_counter = 0
+    until guess_counter == 1
+      if @board_computer.valid_coordinate?(player_guess)
+        guess_counter += 1
+      else
+        puts "Please enter a valid coordinate:"
+        player_guess = gets.strip.gsub(",", "").upcase
+      end
+    end
+
+    # Computer guesses square
+    # hash.keys => [array of keys].sample
+    computer_guess = @board_player.cells.keys.sample
+    @board_player.cells.keys.delete(computer_guess)
 
 
 
