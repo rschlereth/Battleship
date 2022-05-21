@@ -2,7 +2,7 @@ class Cell
   attr_reader :coordinate, :cell_hit
   attr_accessor :ship
 
-  def initialize(coordinate) 
+  def initialize(coordinate)
     @coordinate = coordinate
     @ship = nil
     @cell_hit = 0
@@ -42,9 +42,15 @@ class Cell
     #if no ship in cell, then miss
   end
 
-  def render(trigger = false)
-    if trigger == true
-      if empty? == false
+  def render_cell(trigger = false)
+    if trigger == true && empty? == false
+      if fired_upon? == true
+        if @ship.sunk? == true
+          return "X"
+        else
+          return "H"
+        end
+      else
         return "S"
       end
     # if fired_upon_the_cell? is false, then it renders "."
@@ -54,8 +60,8 @@ class Cell
     elsif fired_upon? == true && empty? == true
       return "M"
     # if the cell has a ship, has been fired upon, AND the ship has sunk, then render "X"
-  elsif fired_upon? == true && empty? == false && @ship.health == 0
-    return "X"
+    elsif fired_upon? == true && empty? == false && @ship.sunk? == true
+      return "X"
     # if the cell has a ship and is fired upon, then it renders "H"
     elsif fired_upon? == true && empty? == false
       return "H"

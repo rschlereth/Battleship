@@ -68,4 +68,26 @@ class Board
     end
   end
 
+  def render_board(trigger = false)
+    # p "  1 2 3 4 \n"
+    letters = ["A", "B", "C", "D"]
+    nums = [1, 2, 3, 4]
+    board_render = "  1 2 3 4 \n"
+    letters.each do |letter|
+      board_render += letter
+      board_render += " "
+      nums.each do |num|
+        board_render += @cells[letter + num.to_s].render_cell(trigger)
+        board_render += " "
+      end
+      board_render += "\n"
+    end
+    p board_render
+    # p board_render[0,12]
+    # p board_render[11,11]
+    # p board_render[22,11]
+    # p board_render[33,11]
+    # p board_render[44,11]
+  end
+
 end
