@@ -10,7 +10,7 @@ class Round
     start_button = gets.strip
     if start_button.downcase == "q"
       puts "See you next time!"
-
+      exit
     # Computer Ship Placement
     elsif start_button.downcase == "p"
       submarine_c = Ship.new("Submarine", 2)
@@ -75,69 +75,86 @@ class Round
 
     # Displaying the Boards
     puts "=============COMPUTER BOARD=============\n"
-    @board_computer.render_board
+    @board_computer.render_board(true)
     puts "==============PLAYER BOARD==============\n"
     @board_player.render_board(true)
 
-    # Player guesses square
-    puts "Enter the square for your shot:"
-    player_guess = gets.strip.gsub(",", "").upcase
-    guess_counter = 0
-    until guess_counter == 1
-      if @board_computer.valid_coordinate?(player_guess)
-        guess_counter += 1
-      else
-        puts "Please enter a valid coordinate:"
-        player_guess = gets.strip.gsub(",", "").upcase
-      end
-    end
+    hits_by_player = 0
+    hits_by_computer = 0
+    until hits_by_player == 5 || hits_by_computer == 5
 
-    # Computer guesses square
-    # hash.keys => [array of keys].sample
-    computer_guess = @board_player.cells.keys.sample
-    @board_player.cells.keys - [computer_guess]
+      # Player guesses square
+      puts "Enter the square for your shot:"
+      player_guess = gets.strip.gsub(",", "").upcase
+      guess_counter = 0
+      until guess_counter == 1
+        if @board_computer.valid_coordinate?(player_guess)
+          guess_counter += 1
+        else
+          puts "Please enter a valid coordinate:"
+          player_guess = gets.strip.gsub(",", "").upcase
+        end
+      end
+
+      # Computer guesses square
+      # hash.keys => [array of keys].sample
+      computer_guess = @board_player.cells.keys.sample
+      @board_player.cells.keys - [computer_guess]
 
     # Diplay Results
     # To do:
-    # Shoot at cell for both player and computer
-    # board.cells["A1"] --> access to Cell A1 and all the Cell methods
-    # board.cells[key] => Cell.new("key")
-    @board_computer.cells[player_guess].fire_upon
-    @board_player.cells[computer_guess].fire_upon
-  # Tell player the outcome of both shots
-    # Your shot on A4 was a miss.
-    # My shot on C1 was a miss.
-    # player_guess = "A1"
-    # .render_cell => "H", "M", "X"
+      # Shoot at cell for both player and computer
+        # board.cells["A1"] --> access to Cell A1 and all the Cell methods
+        # board.cells[key] => Cell.new("key")
+      @board_computer.cells[player_guess].fire_upon
+      @board_player.cells[computer_guess].fire_upon
 
-    # Player guess outcome
-    if @board_computer.cells[player_guess].render_cell == "H"
-      puts "Your shot on #{player_guess} hit a ship."
-    elsif @board_computer.cells[player_guess].render_cell == "M"
-      puts "Your shot on #{player_guess} was a miss."
-    elsif @board_computer.cells[player_guess].render_cell == "X"
-      if @board_computer.cells[player_guess].ship.length == 2
-        puts "Your shot on #{player_guess} hit a ship. You sank my submarine!"
-      elsif @board_computer.cells[player_guess].ship.length == 3
-        puts "Your shot on #{player_guess} hit a ship. You sank my cruiser!"
-      else
-        puts "Your shot on #{player_guess} hit a ship. You sank my ship!"
-      end
-    end
+    # Tell player the outcome of both shots
+      # Your shot on A4 was a miss.
+      # My shot on C1 was a miss.
+      # .render_cell => "H", "M", "X"
 
-    # Computer guess outcome
-    if @board_player.cells[computer_guess].render_cell == "H"
-      puts "My shot on #{computer_guess} hit a ship."
-    elsif @board_player.cells[computer_guess].render_cell == "M"
-      puts "My shot on #{computer_guess} was a miss."
-    elsif @board_player.cells[computer_guess].render_cell == "X"
-      if @board_player.cells[computer_guess].ship.length == 2
-        puts "My shot on #{computer_guess} hit a ship. I sank your submarine!"
-      elsif @board_player.cells[computer_guess].ship.length == 3
-        puts "My shot on #{computer_guess} hit a ship. I sank your cruiser!"
-      else
-        puts "My shot on #{computer_guess} hit a ship. I sank your ship!"
+      # Player guess outcome
+      if @board_computer.cells[player_guess].render_cell == "H"
+        puts "Your shot on #{player_guess} hit a ship."
+        hits_by_player += 1
+      elsif @board_computer.cells[player_guess].render_cell == "M"
+        puts "Your shot on #{player_guess} was a miss."
+      elsif @board_computer.cells[player_guess].render_cell == "X"
+        hits_by_player += 1
+        if @board_computer.cells[player_guess].ship.length == 2
+          puts "Your shot on #{player_guess} hit a ship. You sank my submarine!"
+        elsif @board_computer.cells[player_guess].ship.length == 3
+          puts "Your shot on #{player_guess} hit a ship. You sank my cruiser!"
+        else
+          puts "Your shot on #{player_guess} hit a ship. You sank my ship!"
+        end
       end
+
+      # Computer guess outcome
+      if @board_player.cells[computer_guess].render_cell == "H"
+        puts "My shot on #{computer_guess} hit a ship."
+        hits_by_computer += 1
+      elsif @board_player.cells[computer_guess].render_cell == "M"
+        puts "My shot on #{computer_guess} was a miss."
+      elsif @board_player.cells[computer_guess].render_cell == "X"
+        hits_by_computer += 1
+        if @board_player.cells[computer_guess].ship.length == 2
+          puts "My shot on #{computer_guess} hit a ship. I sank your submarine!"
+        elsif @board_player.cells[computer_guess].ship.length == 3
+          puts "My shot on #{computer_guess} hit a ship. I sank your cruiser!"
+        else
+          puts "My shot on #{computer_guess} hit a ship. I sank your ship!"
+        end
+      end
+
+      # Displaying the Boards
+      puts "=============COMPUTER BOARD=============\n"
+      @board_computer.render_board(true)
+      "\n"
+      puts "==============PLAYER BOARD==============\n"
+      @board_player.render_board(true)
+      "\n"
     end
   end
 
