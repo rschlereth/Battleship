@@ -75,7 +75,7 @@ class Round
 
     # Displaying the Boards
     puts "=============COMPUTER BOARD=============\n"
-    @board_computer.render_board(true)
+    @board_computer.render_board
     puts "==============PLAYER BOARD==============\n"
     @board_player.render_board(true)
 
@@ -88,7 +88,12 @@ class Round
       player_guess = gets.strip.gsub(",", "").upcase
       guess_counter = 0
       until guess_counter == 1
-        if @board_computer.valid_coordinate?(player_guess)
+        # create a check for if the cell has already been guessed
+        # looking to see if @cell_hit of the player_guess cell has a counter that is greater than 0 (if it's >0, it's been hit)
+        if @board_computer.cells[player_guess].cell_hit > 0
+          puts "Square has been guessed already. Please select again:"
+          player_guess = gets.strip.gsub(",", "").upcase
+        elsif @board_computer.valid_coordinate?(player_guess)
           guess_counter += 1
         else
           puts "Please enter a valid coordinate:"
@@ -150,12 +155,22 @@ class Round
 
       # Displaying the Boards
       puts "=============COMPUTER BOARD=============\n"
-      @board_computer.render_board(true)
+      @board_computer.render_board
       "\n"
       puts "==============PLAYER BOARD==============\n"
       @board_player.render_board(true)
       "\n"
     end
+
+    # if player hits = 5, then puts "You won"
+    # if computer hits = 5, then puts "I won"
+    if hits_by_player == 5
+      puts "You won :("
+    elsif hits_by_computer == 5
+      puts "I won!"
+    end
+
+    start
   end
 
   def computer_placement(ship)
