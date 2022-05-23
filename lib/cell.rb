@@ -25,7 +25,14 @@ class Cell
         return false
       end
     # if the cell is not empty (has a ship)
-    elsif @ship.length != @ship.health
+    elsif @cell_hit > 0
+      # @ship.length = 2; @ship.health = 1
+      # A1 and A2 hosts submarine
+      # submarine length of 2; and health of 2
+      # A1 gets hit
+      # submarine has a length 2; health is down to 1
+      # A2's status -- has it been fired_upon?
+      # Answers yes even though A2 has NOT been fired upon!!
       return true
     else
       return false
@@ -36,6 +43,7 @@ class Cell
     # check if there's a ship present in the cell, if there is a ship in the cell, then there's a hit
     if empty? == false
       @ship.hit
+      @cell_hit += 1
     elsif
       @cell_hit += 1
     end

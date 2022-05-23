@@ -1,5 +1,5 @@
 class Board
-  attr_reader :cells
+  attr_reader :cells, :name
 
   def initialize
     @cells = {
@@ -72,11 +72,13 @@ class Board
     # p "  1 2 3 4 \n"
     letters = ["A", "B", "C", "D"]
     nums = [1, 2, 3, 4]
-    board_render = "  1 2 3 4 \n"
-    letters.each do |letter|
-      board_render += letter
-      board_render += " "
-      nums.each do |num|
+    board_render = "  1 2 3 4 \n" # add "A"
+    letters.each do |letter| # "A"
+      board_render += letter # board_render = "  \ 1 2 3 4 \nA"
+      board_render += " " # board_render = "  \ 1 2 3 4 \nA "
+      nums.each do |num| # num = 1
+        # @cells["A" + "1" = "A1"].render_cell(trigger = false)
+        # @cells["A1"].render_cell 
         board_render += @cells[letter + num.to_s].render_cell(trigger)
         board_render += " "
       end
