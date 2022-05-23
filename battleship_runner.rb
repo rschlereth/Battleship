@@ -11,4 +11,4 @@ round = Round.new(board_computer, board_player)
 round.start
 
 # round.computer_placement(Ship.new("Submarine", 2))
-# round.computer_placement(Ship.new("Cruiser", 3))
+# round.computer_placement(Ship.new("Cruiser", 3)) 
