@@ -5,14 +5,62 @@ class Round
     @board_player = board_player
   end
 
-  def start
+  def start(p_or_q = nil, height, width)
+    if p_or_q == "q"
+      true
+    elsif p_or_q == "p"
+      dimensions(height, width)
+    else
+      user_input_version
+    end
+  end
+
+  def dimensions(height, width)
+    @board_computer.cells.clear
+    @board_player.cells.clear
+
+    board_letters = []
+    letter_ord = 65
+    until board_letters.count == height
+      board_letters << letter_ord.chr
+      letter_ord += 1
+    end
+
+    board_numbers = []
+    number = 1
+    until board_numbers.count == width
+      board_numbers << number.to_s
+      number += 1
+    end
+
+    cells_key = []
+    board_letters.each do |letter|
+      board_numbers.each do |number|
+        cells_key << letter + number
+      end
+    end
+    binding.pry #check for value stored in cells_key
+
+    cells_key.each do |key|
+      @board_computer.cells[key] = Cell.new(key)
+      @board_player.cells[key] = Cell.new(key)
+    end
+    binding.pry #check for hashes
+  end
+
+  def user_input_version
     puts "Welcome to BATTLESHIP \nEnter p to play. Enter q to quit."
     start_button = gets.strip
     if start_button.downcase == "q"
       puts "See you next time!"
+      true
       exit
+
     # Computer Ship Placement
     elsif start_button.downcase == "p"
+      puts "Select your board dimensions.
+      Please enter the number of rows for height and number of columns for width, separated by a space."
+      dimensions = gets.strip.gsub(",", "").upcase.split(" ")
       submarine_c = Ship.new("Submarine", 2)
       cruiser_c = Ship.new("Cruiser", 3)
       @submarine_coords_c = computer_placement(submarine_c)
@@ -175,26 +223,27 @@ class Round
 
   def computer_placement(ship)
     coordinates = []
-    letters = ["A", "B", "C", "D"]
-    nums = ["1", "2", "3", "4"]
-    coordinates << letters.sample + nums.sample
-    #["B2"], r1 = 0, ship.length = 2
+    # method edited for iteration 4
+    # letters = ["A", "B", "C", "D"]
+    # nums = ["1", "2", "3", "4"]
+    coordinates << board_letters.sample + board_numbers.sample
+    #["B2"], random_num = 0, ship.length = 2
     cell_index = 0
-    r1 = [0, 1].sample
+    random_num = [0, 1].sample
     until coordinates.count == ship.length
-      if r1 == 0 && coordinates[cell_index][1..-1].to_i < 4
+      if random_num == 0 && coordinates[cell_index][1..-1].to_i < board_numbers[-1]
         num = coordinates[cell_index][1..-1].to_i + 1 # coordinates = ["B2"] num = 2 + 1 = 3
         coordinates << coordinates[cell_index][0] + num.to_s # "B" + "3" => "B3" coordinates = ["B2", "B3"]
         cell_index += 1
-      elsif r1 == 0 && coordinates[cell_index][1..-1].to_i == 4
+      elsif random_num == 0 && coordinates[cell_index][1..-1].to_i == board_numbers[-1]
         coordinates.clear
         coordinates << letters.sample + nums.sample
         cell_index = 0
-      elsif r1 == 1 && coordinates[cell_index][0] < "D"
+      elsif random_num == 1 && coordinates[cell_index][0] < board_letter[-1]
         letter = coordinates[cell_index][0].ord + 1
         coordinates << letter.chr + coordinates[cell_index][1..-1].to_i.to_s
         cell_index += 1
-      elsif r1 == 1 && coordinates[cell_index][0] == "D"
+      elsif random_num == 1 && coordinates[cell_index][0] == board_letter[-1]
         coordinates.clear
         coordinates << letters.sample + nums.sample
         cell_index = 0
