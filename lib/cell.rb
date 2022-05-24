@@ -18,7 +18,7 @@ class Cell
 
   def fired_upon?
     # if the cell IS empty
-    if empty? == true
+    if empty?
       if @cell_hit > 0
         return true
       else
@@ -41,7 +41,7 @@ class Cell
 
   def fire_upon
     # check if there's a ship present in the cell, if there is a ship in the cell, then there's a hit
-    if empty? == false
+    if !empty?
       @ship.hit
       @cell_hit += 1
     elsif
@@ -51,9 +51,9 @@ class Cell
   end
 
   def render_cell(trigger = false)
-    if trigger == true && empty? == false
-      if fired_upon? == true
-        if @ship.sunk? == true
+    if trigger == true && !empty?
+      if fired_upon?
+        if @ship.sunk?
           return "X"
         else
           return "H"
@@ -62,16 +62,16 @@ class Cell
         return "S"
       end
     # if fired_upon_the_cell? is false, then it renders "."
-    elsif fired_upon? == false
+    elsif !fired_upon?
       return "."
     # if fired_upon? is true and no ship, then renders "M"
-    elsif fired_upon? == true && empty? == true
+    elsif fired_upon? && empty?
       return "M"
     # if the cell has a ship, has been fired upon, AND the ship has sunk, then render "X"
-    elsif fired_upon? == true && empty? == false && @ship.sunk? == true
+    elsif fired_upon? && !empty? && @ship.sunk?
       return "X"
     # if the cell has a ship and is fired upon, then it renders "H"
-    elsif fired_upon? == true && empty? == false
+    elsif fired_upon? && !empty?
       return "H"
     end
   end
