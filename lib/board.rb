@@ -68,17 +68,39 @@ class Board
     end
   end
 
-  def render_board(trigger = false)
-    # p "  1 2 3 4 \n"
-    letters = ["A", "B", "C", "D"]
-    nums = [1, 2, 3, 4]
-    board_render = "  1 2 3 4 \n" # add "A"
-    letters.each do |letter| # "A"
+  def render_board(height = 4, width = 4, trigger = false)
+    # letters = ["A", "B", "C", "D"]
+    # nums = [1, 2, 3, 4]
+    board_letters = []
+    letter_ord = 65
+    until board_letters.count == height
+      board_letters << letter_ord.chr
+      letter_ord += 1
+    end
+# binding.pry
+
+    board_numbers = []
+    number = 1
+    until board_numbers.count == width
+      board_numbers << number.to_s
+      # binding.pry
+      number += 1
+      # binding.pry
+    end
+# binding.pry
+
+    # board_render = "  1 2 3 4 \n" # add "A"
+    board_render = "  "
+    board_numbers.each do |number|
+      board_render += number + " "
+    end
+    board_render += "\n"
+    board_letters.each do |letter| # "A"
       board_render += letter # board_render = "  \ 1 2 3 4 \nA"
       board_render += " " # board_render = "  \ 1 2 3 4 \nA "
-      nums.each do |num| # num = 1
+      board_numbers.each do |num| # num = 1
         # @cells["A" + "1" = "A1"].render_cell(trigger = false)
-        # @cells["A1"].render_cell 
+        # @cells["A1"].render_cell
         board_render += @cells[letter + num.to_s].render_cell(trigger)
         board_render += " "
       end

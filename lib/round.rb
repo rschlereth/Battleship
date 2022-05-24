@@ -5,11 +5,12 @@ class Round
     @board_player = board_player
   end
 
-  def start(p_or_q = nil, height, width)
+  def start(p_or_q = nil, height = 4, width = 4)
     if p_or_q == "q"
       true
     elsif p_or_q == "p"
       dimensions(height, width)
+      @board_player.render_board(height, width)
     else
       user_input_version
     end
@@ -19,33 +20,31 @@ class Round
     @board_computer.cells.clear
     @board_player.cells.clear
 
-    board_letters = []
+    @board_letters = []
     letter_ord = 65
-    until board_letters.count == height
-      board_letters << letter_ord.chr
+    until @board_letters.count == height
+      @board_letters << letter_ord.chr
       letter_ord += 1
     end
 
-    board_numbers = []
+    @board_numbers = []
     number = 1
-    until board_numbers.count == width
-      board_numbers << number.to_s
+    until @board_numbers.count == width
+      @board_numbers << number.to_s
       number += 1
     end
 
     cells_key = []
-    board_letters.each do |letter|
-      board_numbers.each do |number|
+    @board_letters.each do |letter|
+      @board_numbers.each do |number|
         cells_key << letter + number
       end
     end
-    binding.pry #check for value stored in cells_key
 
     cells_key.each do |key|
       @board_computer.cells[key] = Cell.new(key)
       @board_player.cells[key] = Cell.new(key)
     end
-    binding.pry #check for hashes
   end
 
   def user_input_version
@@ -58,11 +57,21 @@ class Round
 
     # Computer Ship Placement
     elsif start_button.downcase == "p"
-      puts "Select your board dimensions.
-      Please enter the number of rows for height and number of columns for width, separated by a space."
-      dimensions = gets.strip.gsub(",", "").upcase.split(" ")
-      submarine_c = Ship.new("Submarine", 2)
-      cruiser_c = Ship.new("Cruiser", 3)
+      puts "Select your board dimensions. Please enter the number of rows for height and number of columns for width, separated by a space."
+      dimensions_counter = 0
+      until dimensions_counter == 1
+        dimensions = gets.strip.gsub(",", "").split(" ")
+        submarine_c = Ship.new("Submarine", 2)
+        cruiser_c = Ship.new("Cruiser", 3)
+        height = dimensions[0].to_i
+        width = dimensions[-1].to_i
+        if height <= 26 && width <= 26 && height * width > submarine_c.length + cruiser_c.length
+          dimensions(height, width)
+          dimensions_counter += 1
+        else
+          puts "Incorrect height or width dimensions. Height and width need to be entered as integers; the height and width cannot each be greater than 26; and the board should be large enough to accommodate your ships. Example: 4 4. Please try again."
+        end
+      end
       @submarine_coords_c = computer_placement(submarine_c)
       @cruiser_coords_c = computer_placement(cruiser_c)
       valid_placement = 0
@@ -89,7 +98,8 @@ class Round
 
     # Player Ship Placement
     puts "I have laid out my ships on the grid.\nYou now need to lay out your two ships.\nThe Cruiser is three units long and the Submarine is two units long."
-    @board_player.render_board
+binding.pry
+    @board_player.render_board(height, width)
     puts "Enter the 3 squares for the Cruiser, separated by spaces:"
     cruiser_coords_p1 = gets.strip.gsub(",", "").upcase.split(" ")
 
@@ -100,7 +110,8 @@ class Round
       if @board_player.valid_placement?(cruiser_p1, cruiser_coords_p1)
         @board_player.place(cruiser_p1, cruiser_coords_p1)
         valid_placement += 1
-        @board_player.render_board(true)
+        binding.pry
+        @board_player.render_board(height, width, true)
       else
         puts "Your entered squares for Cruiser are invalid. Please try again and enter 3 squares for the Cruiser, separated by spaces (Example: A1 A2 A3):"
         cruiser_coords_p1 = gets.strip.gsub(",", "").upcase.split(" ")
@@ -114,7 +125,8 @@ class Round
       if @board_player.valid_placement?(submarine_p1, submarine_coords_p1)
         @board_player.place(submarine_p1, submarine_coords_p1)
         valid_placement += 1
-        @board_player.render_board(true)
+        binding.pry
+        @board_player.render_board(height, width, true)
       else
         puts "Your entered squares for Submarine are invalid. Please try again and enter 2 squares for the Submarine, separated by spaces (Example: A1 A2):"
         submarine_coords_p1 = gets.strip.gsub(",", "").upcase.split(" ")
@@ -123,9 +135,11 @@ class Round
 
     # Displaying the Boards
     puts "=============COMPUTER BOARD=============\n"
-    @board_computer.render_board
+    binding.pry
+    @board_computer.render_board(height, width)
     puts "==============PLAYER BOARD==============\n"
-    @board_player.render_board(true)
+    binding.pry
+    @board_player.render_board(height, width, true)
 
     hits_by_player = 0
     hits_by_computer = 0
@@ -203,10 +217,12 @@ class Round
 
       # Displaying the Boards
       puts "=============COMPUTER BOARD=============\n"
-      @board_computer.render_board
+      binding.pry
+      @board_computer.render_board(height, width)
       "\n"
       puts "==============PLAYER BOARD==============\n"
-      @board_player.render_board(true)
+      binding.pry
+      @board_player.render_board(height, width, true)
       "\n"
     end
 
@@ -226,30 +242,30 @@ class Round
     # method edited for iteration 4
     # letters = ["A", "B", "C", "D"]
     # nums = ["1", "2", "3", "4"]
-    coordinates << board_letters.sample + board_numbers.sample
+    coordinates << @board_letters.sample + @board_numbers.sample
     #["B2"], random_num = 0, ship.length = 2
     cell_index = 0
     random_num = [0, 1].sample
     until coordinates.count == ship.length
-      if random_num == 0 && coordinates[cell_index][1..-1].to_i < board_numbers[-1]
+      if random_num == 0 && coordinates[cell_index][1..-1].to_i < @board_numbers[-1].to_i
         num = coordinates[cell_index][1..-1].to_i + 1 # coordinates = ["B2"] num = 2 + 1 = 3
         coordinates << coordinates[cell_index][0] + num.to_s # "B" + "3" => "B3" coordinates = ["B2", "B3"]
         cell_index += 1
-      elsif random_num == 0 && coordinates[cell_index][1..-1].to_i == board_numbers[-1]
+      elsif random_num == 0 && coordinates[cell_index][1..-1].to_i == @board_numbers[-1].to_i
         coordinates.clear
-        coordinates << letters.sample + nums.sample
+        coordinates << @board_letters.sample + @board_numbers.sample
         cell_index = 0
-      elsif random_num == 1 && coordinates[cell_index][0] < board_letter[-1]
+      elsif random_num == 1 && coordinates[cell_index][0] < @board_letters[-1]
         letter = coordinates[cell_index][0].ord + 1
         coordinates << letter.chr + coordinates[cell_index][1..-1].to_i.to_s
         cell_index += 1
-      elsif random_num == 1 && coordinates[cell_index][0] == board_letter[-1]
+      elsif random_num == 1 && coordinates[cell_index][0] == @board_letters[-1]
         coordinates.clear
-        coordinates << letters.sample + nums.sample
+        coordinates << @board_letters.sample + @board_numbers.sample
         cell_index = 0
       else
         coordinates.clear
-        coordinates << letters.sample + nums.sample
+        coordinates << @board_letters.sample + @board_numbers.sample
         cell_index = 0
       end
     end
