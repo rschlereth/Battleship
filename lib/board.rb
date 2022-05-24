@@ -62,10 +62,19 @@ class Board
     end
   end
 
+  def valid_coordinates(coordinates)
+    coordinates.each do |coordinate|
+      if !valid_coordinate?(coordinate)
+        return false
+      end
+    end
+  end
+    
   def valid_placement?(ship, coordinates)
     @valid_pair = 0
+    binding.pry
     # testing to see if the ship length is the same as the number of cells
-    if ship.length != coordinates.count
+    if ship.length != coordinates.count || !valid_coordinates?(coordinates)
       return false
     else
       valid_coordinate_pairs(coordinates)
@@ -80,6 +89,7 @@ class Board
   def place(ship, coordinates)
     # take each coordinate and place a ship in them
     coordinates.each do |coordinate|
+      binding.pry
       @cells[coordinate].place_ship(ship)
     end
   end

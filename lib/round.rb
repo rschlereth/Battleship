@@ -74,6 +74,7 @@ class Round
       end
       @submarine_coords_c = computer_placement(submarine_c)
       @cruiser_coords_c = computer_placement(cruiser_c)
+      binding.pry
       valid_placement = 0
       until valid_placement == 1
         if @board_computer.valid_placement?(submarine_c, @submarine_coords_c)
@@ -98,7 +99,6 @@ class Round
 
     # Player Ship Placement
     puts "I have laid out my ships on the grid.\nYou now need to lay out your two ships.\nThe Cruiser is three units long and the Submarine is two units long."
-binding.pry
     @board_player.render_board(height, width)
     puts "Enter the 3 squares for the Cruiser, separated by spaces:"
     cruiser_coords_p1 = gets.strip.gsub(",", "").upcase.split(" ")
@@ -108,9 +108,9 @@ binding.pry
     valid_placement = 0
     until valid_placement == 1
       if @board_player.valid_placement?(cruiser_p1, cruiser_coords_p1)
+        binding.pry
         @board_player.place(cruiser_p1, cruiser_coords_p1)
         valid_placement += 1
-        binding.pry
         @board_player.render_board(height, width, true)
       else
         puts "Your entered squares for Cruiser are invalid. Please try again and enter 3 squares for the Cruiser, separated by spaces (Example: A1 A2 A3):"
@@ -125,7 +125,6 @@ binding.pry
       if @board_player.valid_placement?(submarine_p1, submarine_coords_p1)
         @board_player.place(submarine_p1, submarine_coords_p1)
         valid_placement += 1
-        binding.pry
         @board_player.render_board(height, width, true)
       else
         puts "Your entered squares for Submarine are invalid. Please try again and enter 2 squares for the Submarine, separated by spaces (Example: A1 A2):"
@@ -135,10 +134,8 @@ binding.pry
 
     # Displaying the Boards
     puts "=============COMPUTER BOARD=============\n"
-    binding.pry
     @board_computer.render_board(height, width)
     puts "==============PLAYER BOARD==============\n"
-    binding.pry
     @board_player.render_board(height, width, true)
 
     hits_by_player = 0
@@ -152,8 +149,8 @@ binding.pry
       until guess_counter == 1
         # create a check for if the cell has already been guessed
         # looking to see if @cell_hit of the player_guess cell has a counter that is greater than 0 (if it's >0, it's been hit)
-        if @board_computer.cells[player_guess].cell_hit > 0
-          puts "Square has been guessed already. Please select again:"
+        if !@board_computer.valid_coordinate?(player_guess) || @board_computer.cells[player_guess].cell_hit > 0
+          puts "Square has been guessed already or is not a valid square. Please select again:"
           player_guess = gets.strip.gsub(",", "").upcase
         elsif @board_computer.valid_coordinate?(player_guess)
           guess_counter += 1
@@ -217,11 +214,9 @@ binding.pry
 
       # Displaying the Boards
       puts "=============COMPUTER BOARD=============\n"
-      binding.pry
       @board_computer.render_board(height, width)
       "\n"
       puts "==============PLAYER BOARD==============\n"
-      binding.pry
       @board_player.render_board(height, width, true)
       "\n"
     end
