@@ -74,7 +74,6 @@ class Round
       end
       @submarine_coords_c = computer_placement(submarine_c)
       @cruiser_coords_c = computer_placement(cruiser_c)
-      binding.pry
       valid_placement = 0
       until valid_placement == 1
         if @board_computer.valid_placement?(submarine_c, @submarine_coords_c)
@@ -108,7 +107,6 @@ class Round
     valid_placement = 0
     until valid_placement == 1
       if @board_player.valid_placement?(cruiser_p1, cruiser_coords_p1)
-        binding.pry
         @board_player.place(cruiser_p1, cruiser_coords_p1)
         valid_placement += 1
         @board_player.render_board(height, width, true)
@@ -128,6 +126,7 @@ class Round
         @board_player.render_board(height, width, true)
       else
         puts "Your entered squares for Submarine are invalid. Please try again and enter 2 squares for the Submarine, separated by spaces (Example: A1 A2):"
+        @board_player.render_board(height, width, true)
         submarine_coords_p1 = gets.strip.gsub(",", "").upcase.split(" ")
       end
     end
@@ -160,10 +159,28 @@ class Round
         end
       end
 
-      # Computer guesses square
+      # Computer guesses square, generate random guesses, until first hit
+      # Once a hit is tallied, up hit count by one, exit until valid_coordinate_pairs
+      # Once a hit is tallied, aim should shift one to the right (up by one number)
+      # In selecting one to the right, outcomes could be [H, M, or X]
+          # If outcome is H, computer should then guess one further to the right.
+          # elsif the outcome is X, ship has been sunk, return to random guess loop.
+          # elsif the outcome is M, computer should then guess one to the left of the original hit tallied.
+      # Going left, outcomes could be [H, M, or X];
+          # If outcome is H, continue guessing, moving one to the left.
+          # elsif the outcome is X, ship has been sunk, return to random guess loop.
+          # elsif the outcome is M, computer should then guess up one cell from original hit cell.
+
       # hash.keys => [array of keys].sample
-      computer_guess = @board_player.cells.keys.sample
-      @board_player.cells.keys - [computer_guess]
+      until @board_player.cells[computer_guess].render_cell == "H"
+        computer_guess = @board_player.cells.keys.sample
+        @board_player.cells.keys - [computer_guess]
+      end
+
+        if @board_player.cells[computer_guess].render_cell == "H"
+          num = computer_guess[1..-1].to_i + 1 # coordinates = ["B2"] num = 2 + 1 = 3
+          incremented_guess = computer_guess[0] + num.to_s
+
 
     # Diplay Results
     # To do:
