@@ -26,39 +26,55 @@ class Board
     @cells.key?(coordinate)
   end
 
+  # helper method to valid_placement? method
+  def no_overlapping_ships?(coordinates)
+    coordinates.each do |coordinate|
+      if !@cells[coordinate].empty?
+        return false
+      else
+        return true
+      end
+    end
+  end
+
+  # helper method to valid_coordinate_pairs method
   def compare_letters(cd1, cd2)
     cd1.ord - cd2.ord
   end
 
+  # helper method to valid_coordinate_pairs method
   def compare_numbers(cd1, cd2)
     cd1[1..-1].to_i - cd2[1..-1].to_i
   end
 
+  # helper method to valid_placement? method
+  def valid_coordinate_pairs(coordinates)
+    coordinates.each_cons(2) do |cd1, cd2|
+      if compare_letters(cd1, cd2) != 0 && compare_letters(cd1, cd2) != -1
+        return false
+      elsif compare_letters(cd1, cd2) == -1 && compare_numbers(cd1, cd2) != 0
+        return false
+      elsif compare_letters(cd1, cd2) == 0 && compare_numbers(cd1, cd2) != -1
+        return false
+      else
+        @valid_pair += 1
+      end
+    end
+  end
+
   def valid_placement?(ship, coordinates)
-    valid_pair = 0
+    @valid_pair = 0
     # testing to see if the ship length is the same as the number of cells
     if ship.length != coordinates.count
       return false
-    elsif
-      coordinates.each_cons(2) do |cd1, cd2|
-        if compare_letters(cd1, cd2) != 0 && compare_letters(cd1, cd2) != -1
-          return false
-        elsif compare_letters(cd1, cd2) == -1 && compare_numbers(cd1, cd2) != 0
-          return false
-        elsif compare_letters(cd1, cd2) == 0 && compare_numbers(cd1, cd2) != -1
-          return false
-        else
-          valid_pair += 1
-        end
-      end
     else
-      coordinates.each do |coordinate|
-        if @cells[coordinate].empty? == false
-          return false
-        end
+      valid_coordinate_pairs(coordinates)
+      if @valid_pair == coordinates.count - 1 && no_overlapping_ships?(coordinates)
+        return true
+      else
+        return false
       end
     end
-    true if valid_pair == coordinates.count - 1
   end
 
   def place(ship, coordinates)
@@ -68,37 +84,40 @@ class Board
     end
   end
 
-  def render_board(height = 4, width = 4, trigger = false)
-    # letters = ["A", "B", "C", "D"]
-    # nums = [1, 2, 3, 4]
-    board_letters = []
+  # helper method for render_board method
+  def generate_letters(height)
+    @board_letters = []
     letter_ord = 65
-    until board_letters.count == height
-      board_letters << letter_ord.chr
+    until @board_letters.count == height
+      @board_letters << letter_ord.chr
       letter_ord += 1
     end
-# binding.pry
+  end
 
-    board_numbers = []
+  # helper method for render_board method
+  def generate_numbers(width)
+    @board_numbers = []
     number = 1
-    until board_numbers.count == width
-      board_numbers << number.to_s
-      # binding.pry
+    until @board_numbers.count == width
+      @board_numbers << number.to_s
       number += 1
-      # binding.pry
     end
-# binding.pry
+  end
+
+  def render_board(height = 4, width = 4, trigger = false)
+    generate_letters(height)
+    generate_numbers(width)
 
     # board_render = "  1 2 3 4 \n" # add "A"
     board_render = "  "
-    board_numbers.each do |number|
+    @board_numbers.each do |number|
       board_render += number + " "
     end
     board_render += "\n"
-    board_letters.each do |letter| # "A"
+    @board_letters.each do |letter| # "A"
       board_render += letter # board_render = "  \ 1 2 3 4 \nA"
       board_render += " " # board_render = "  \ 1 2 3 4 \nA "
-      board_numbers.each do |num| # num = 1
+      @board_numbers.each do |num| # num = 1
         # @cells["A" + "1" = "A1"].render_cell(trigger = false)
         # @cells["A1"].render_cell
         board_render += @cells[letter + num.to_s].render_cell(trigger)
