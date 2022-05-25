@@ -43,4 +43,15 @@ RSpec.describe Round do
       "E S S S . . . \n"
       )
     end
+
+  it "has computer make consecutive guesses" do
+    @round.start("p", 5, 6)
+    p1_cruiser = Ship.new("Cruiser", 3)
+    p1_submarine = Ship.new("Submarine", 2)
+    @board_player.place(p1_cruiser, ["C2", "C3", "C4"])
+    @board_player.place(p1_submarine, ["D6", "E6"])
+
+    expect(@round.intelligent_guesses("C2", 5, 6)).to eq("C3")
+    expect(@round.intelligent_guesses("E6", 5, 6)).to eq("E5")
+  end
 end

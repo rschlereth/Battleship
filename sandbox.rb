@@ -18,3 +18,11 @@ require 'pry'
 
 # array = [1,2,4,3]
 # p array.each_cons(2).all? { |x,y| y == x + 1 }
+
+foo = ["a", "b", "c" ]
+boo = [1, 2, 3]
+if foo.include?("t") || (5 > 4 && boo.count == 3)
+  print "yes!"
+else
+  print "neither are true"
+end

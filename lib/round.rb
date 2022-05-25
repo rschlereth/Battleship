@@ -47,6 +47,81 @@ class Round
     end
   end
 
+  # RSpect version for testing
+  def intelligent_guesses(first_guess, height, width)
+    hits_by_computer = 0
+    computer_guess = first_guess
+    players_board_cells = @board_player.cells.keys
+    players_board_cells -= [computer_guess]
+    @board_player.cells[computer_guess].fire_upon
+
+    # until hits_by_computer == 5
+      until @board_player.cells[computer_guess].render_cell == "H"
+        computer_guess = @board_player.cells.keys.sample
+        players_board_cells -= [computer_guess]
+        return computer_guess
+      end
+
+      direction = "right"
+      until players_board_cells.include?(computer_guess) == true
+        if direction == "right" && computer_guess[-1..1].to_i < width
+          next_guess_num = computer_guess[1..-1].to_i + 1 # from 2 to 3
+          computer_guess = computer_guess[0] + next_guess_num.to_s # "C3"
+          return computer_guess
+        elsif direction == "right" && computer_guess[-1..1].to_i == width
+          direction = "left"
+        elsif direction == "left" && computer_guess[-1..1].to_i > 1
+          next_guess_num = computer_guess[1..-1].to_i - 1 # from 2 to 1
+          computer_guess = computer_guess[0] + next_guess_num.to_s # "C1"
+          return computer_guess
+        elsif direction == 1 && computer_guess[1..-1].to_i == 1
+          direction = "up"
+        elsif direction == "up" && computer_guess[0] > "A"
+          next_guess_letter = computer_guess[0].ord - 1
+          computer_guess = next_guess_letter.chr + computer_guess[1..-1]
+          return computer_guess
+        elsif direction == "up" && computer_guess[0] == "A"
+          direction = "down"
+        elsif direction == "down" && computer_guess[0].ord - 64 < height
+          next_guess_letter = computer_guess[0].ord + 1
+          computer_guess = next_guess_letter.chr + computer_guess[1..-1]
+          return computer_guess
+        end
+        players_board_cells -= [computer_guess]
+      end
+    end
+
+
+
+    # "C2" -> "C3"
+    # "C6" -> "C5"
+    # "C3" -> "C4" -> "C5"
+    # only if first_guess is NOT at 6 column or the very right hand column or width of the board
+  #   next_guess_num = first_guess[1..-1].to_i + 1 # from 2 to 3
+  #   next_guess = first_guess[0] + next_guess_num.to_s
+  #   binding.pry
+  #
+  #   until @board_player.cells[next_guess].render_cell == "X"
+  #     if first_guess[1..-1].to_i < width &&   @board_player.cells[next_guess].render_cell == "H"
+  #       # if the first_guess returns "H" and it's not on the edge of the board
+  #       next_guess_num = first_guess[1..-1].to_i + 1 # from 2 to 3
+  #       next_guess = first_guess[0] + next_guess_num.to_s # "C3"
+  #       # does next_guess return an "H"?
+  #         # if yes, then keep shooting in same direction
+  #         # if yes but at edge, shoot in opposite direction
+  #         # if returns "M" shoot in opposite direction
+  #         # if returns "X" go back to random guessing
+  #       # @board_computer.cells[player_guess].render_cell == "H"
+  #     elsif first_guess[1..-1].to_i == width || @board_player.cells[next_guess].render_cell == "M"
+  #       next_guess_num = first_guess[1..-1].to_i - 1 # 3 - 1 = 2
+  #       next_guess = first_guess[0] + next_guess_num.to_s # C2
+  #     end
+  #     @board_player.cells[next_guess].fire_upon # C5
+  #     @board_player.cells[next_guess].render_cell # C5 -> "M"
+  #   end
+  #   return next_guess
+  # end
+
   def user_input_version
     puts "Welcome to BATTLESHIP \nEnter p to play. Enter q to quit."
     start_button = gets.strip
@@ -54,7 +129,6 @@ class Round
       puts "See you next time!"
       true
       exit
-
     # Computer Ship Placement
     elsif start_button.downcase == "p"
       puts "Select your board dimensions. Please enter the number of rows for height and number of columns for width, separated by a space."
@@ -139,6 +213,7 @@ class Round
 
     hits_by_player = 0
     hits_by_computer = 0
+    individual_ship_hit = 0
     until hits_by_player == 5 || hits_by_computer == 5
 
       # Player guesses square
@@ -159,28 +234,55 @@ class Round
         end
       end
 
-      # Computer guesses square, generate random guesses, until first hit
-      # Once a hit is tallied, up hit count by one, exit until valid_coordinate_pairs
-      # Once a hit is tallied, aim should shift one to the right (up by one number)
-      # In selecting one to the right, outcomes could be [H, M, or X]
-          # If outcome is H, computer should then guess one further to the right.
-          # elsif the outcome is X, ship has been sunk, return to random guess loop.
-          # elsif the outcome is M, computer should then guess one to the left of the original hit tallied.
-      # Going left, outcomes could be [H, M, or X];
-          # If outcome is H, continue guessing, moving one to the left.
-          # elsif the outcome is X, ship has been sunk, return to random guess loop.
-          # elsif the outcome is M, computer should then guess up one cell from original hit cell.
+      # computer guess
+      # generate random guesses for squares
+      binding.pry # check for individual_ship_hit
 
-      # hash.keys => [array of keys].sample
-      until @board_player.cells[computer_guess].render_cell == "H"
-        computer_guess = @board_player.cells.keys.sample
-        @board_player.cells.keys - [computer_guess]
+      if hits_by_computer == 0 || @computer_guess_result == "X"
+        players_board_cells = @board_player.cells.keys
+        computer_guess = players_board_cells.sample
+        players_board_cells -= [computer_guess]
+        direction = "right"
+      else
+        until players_board_cells.include?(computer_guess) == true
+          binding.pry # check for individual_ship_hit
+          if @computer_guess_result == "H" && direction == "right" && computer_guess[-1..1].to_i < width # made first hit, need to check all 4 sides
+            next_guess_num = computer_guess[1..-1].to_i + 1 # from 2 to 3
+            computer_guess = computer_guess[0] + next_guess_num.to_s # "C3"
+          elsif @computer_guess_result == "H" && direction == "right" && computer_guess[-1..1].to_i == width # last hit was an H; moving right; but at edge of board
+            direction = "left"
+            next_guess_num = computer_guess[1..-1].to_i - (individual_ship_hit + 1) # from 2 to 1
+            computer_guess = computer_guess[0] + next_guess_num.to_s #"C1"
+          elsif @computer_guess_result == "M" && direction == "right"
+            direction = "left"
+            next_guess_num = computer_guess[1..-1].to_i - 2 # from 2 to 1
+            computer_guess = computer_guess[0] + next_guess_num.to_s #"C1"
+          elsif @computer_guess_result == "H" && direction == "left" && computer_guess[-1..1].to_i > 1
+            next_guess_num = computer_guess[1..-1].to_i - 1 # from 2 to 1
+            computer_guess = computer_guess[0] + next_guess_num.to_s #"C1"
+          elsif @computer_guess_result == "M" && direction == "left" && computer_guess[0] > "A"
+            direction = "up"
+            next_guess_num = computer_guess[1..-1].to_i + 1 # C4H, C5M, C3M, B4
+            next_guess_letter = computer_guess[0].ord - 1 # C.ord = 67; 67-1 = 66
+            computer_guess = next_guess_letter.chr + next_guess_num.to_s # B4
+          elsif @computer_guess_result == "H" && direction == "up" && computer_guess[0] > "A"
+            next_guess_letter = computer_guess[0].ord - 1 # C.ord = 67; 67-1 = 66
+            computer_guess = next_guess_letter.chr + computer_guess[1..-1]
+          elsif @computer_guess_result == "H" && direction == "up" && computer_guess[0] == "A"
+            direction = "down"
+            next_guess_letter = computer_guess[0].ord + 2 # C.ord = 67; 67-1 = 66
+            computer_guess = next_guess_letter.chr + computer_guess[1..-1]
+          elsif @computer_guess_result == "M" && direction == "up" && computer_guess[0].ord - "A".ord + 1 < height
+            direction = "down"
+            next_guess_letter = computer_guess[0].ord + (individual_ship_hit + 1) # B.ord = 66; 66+3 = 69
+            computer_guess = next_guess_letter.chr + computer_guess[1..-1]
+          elsif @computer_guess_result == "H" && direction == "down" && computer_guess[0].ord - "A".ord + 1 < height
+            next_guess_letter = computer_guess[0].ord + 1 # C.ord = 67; 67-1 = 66
+            computer_guess = next_guess_letter.chr + computer_guess[1..-1]
+          end
+        end
+        players_board_cells -= [computer_guess] 
       end
-
-        if @board_player.cells[computer_guess].render_cell == "H"
-          num = computer_guess[1..-1].to_i + 1 # coordinates = ["B2"] num = 2 + 1 = 3
-          incremented_guess = computer_guess[0] + num.to_s
-
 
     # Diplay Results
     # To do:
@@ -229,6 +331,14 @@ class Round
         end
       end
 
+      @computer_guess_result = @board_player.cells[computer_guess].render_cell
+      if @computer_guess_result == "X"
+        individual_ship_hit = 0
+      elsif @computer_guess_result == "H"
+        individual_ship_hit += 1
+      end
+
+      binding.pry
       # Displaying the Boards
       puts "=============COMPUTER BOARD=============\n"
       @board_computer.render_board(height, width)
