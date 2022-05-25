@@ -91,37 +91,6 @@ class Round
       end
     end
 
-
-
-    # "C2" -> "C3"
-    # "C6" -> "C5"
-    # "C3" -> "C4" -> "C5"
-    # only if first_guess is NOT at 6 column or the very right hand column or width of the board
-  #   next_guess_num = first_guess[1..-1].to_i + 1 # from 2 to 3
-  #   next_guess = first_guess[0] + next_guess_num.to_s
-  #   binding.pry
-  #
-  #   until @board_player.cells[next_guess].render_cell == "X"
-  #     if first_guess[1..-1].to_i < width &&   @board_player.cells[next_guess].render_cell == "H"
-  #       # if the first_guess returns "H" and it's not on the edge of the board
-  #       next_guess_num = first_guess[1..-1].to_i + 1 # from 2 to 3
-  #       next_guess = first_guess[0] + next_guess_num.to_s # "C3"
-  #       # does next_guess return an "H"?
-  #         # if yes, then keep shooting in same direction
-  #         # if yes but at edge, shoot in opposite direction
-  #         # if returns "M" shoot in opposite direction
-  #         # if returns "X" go back to random guessing
-  #       # @board_computer.cells[player_guess].render_cell == "H"
-  #     elsif first_guess[1..-1].to_i == width || @board_player.cells[next_guess].render_cell == "M"
-  #       next_guess_num = first_guess[1..-1].to_i - 1 # 3 - 1 = 2
-  #       next_guess = first_guess[0] + next_guess_num.to_s # C2
-  #     end
-  #     @board_player.cells[next_guess].fire_upon # C5
-  #     @board_player.cells[next_guess].render_cell # C5 -> "M"
-  #   end
-  #   return next_guess
-  # end
-
   def user_input_version
     puts "Welcome to BATTLESHIP \nEnter p to play. Enter q to quit."
     start_button = gets.strip
@@ -146,6 +115,7 @@ class Round
           puts "Incorrect height or width dimensions. Height and width need to be entered as integers; the height and width cannot each be greater than 26; and the board should be large enough to accommodate your ships. Example: 4 4. Please try again."
         end
       end
+
       @submarine_coords_c = computer_placement(submarine_c)
       @cruiser_coords_c = computer_placement(cruiser_c)
       valid_placement = 0
@@ -171,7 +141,7 @@ class Round
     end
 
     # Player Ship Placement
-    puts "I have laid out my ships on the grid.\nYou now need to lay out your two ships.\nThe Cruiser is three units long and the Submarine is two units long."
+    puts "I have laid out my ships on the grid.\nYou now need to lay out your two ships.\nThe Cruiser is three units long and the Submarine is two units long.\n"
     @board_player.render_board(height, width)
     puts "Enter the 3 squares for the Cruiser, separated by spaces:"
     cruiser_coords_p1 = gets.strip.gsub(",", "").upcase.split(" ")
@@ -286,18 +256,9 @@ class Round
         players_board_cells -= [computer_guess]
       end
 
-    # Diplay Results
-    # To do:
-      # Shoot at cell for both player and computer
-        # board.cells["A1"] --> access to Cell A1 and all the Cell methods
-        # board.cells[key] => Cell.new("key")
+      # fire upon the selected cells
       @board_computer.cells[player_guess].fire_upon
       @board_player.cells[computer_guess].fire_upon
-
-    # Tell player the outcome of both shots
-      # Your shot on A4 was a miss.
-      # My shot on C1 was a miss.
-      # .render_cell => "H", "M", "X"
 
       # Player guess outcome
       if @board_computer.cells[player_guess].render_cell == "H"
@@ -333,6 +294,7 @@ class Round
         end
       end
 
+      # adjust variables for intelligent guesses based on outcome
       @computer_guess_result = @board_player.cells[computer_guess].render_cell
       if @computer_guess_result == "X"
         individual_ship_hit = 0
