@@ -29,7 +29,6 @@ class Board
   # helper method to valid_placement? method
   def no_overlapping_ships?(coordinates)
     coordinates.each do |coordinate|
-      binding.pry
       if !@cells[coordinate].empty?
         return false
       end
@@ -77,7 +76,6 @@ class Board
     else
       valid_coordinate_pairs(coordinates)
       if @valid_pair == coordinates.count - 1 && no_overlapping_ships?(coordinates)
-binding.pry
         return true
       else
         return false
