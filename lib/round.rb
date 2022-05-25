@@ -47,8 +47,9 @@ class Round
     end
   end
 
-  # RSpect version for testing
+  # RSpec version for testing
   def intelligent_guesses(first_guess, height, width)
+    players_board_cells = @board_player.cells.keys
     hits_by_computer = 0
     computer_guess = first_guess
     players_board_cells -= [computer_guess]
@@ -283,7 +284,6 @@ class Round
           end
         end
         players_board_cells -= [computer_guess]
-        binding.pry
       end
 
     # Diplay Results
@@ -340,7 +340,6 @@ class Round
         individual_ship_hit += 1
       end
 
-      binding.pry #check players_board_cells
       # Displaying the Boards
       puts "\n=============COMPUTER BOARD=============\n"
       @board_computer.render_board(height, width)
