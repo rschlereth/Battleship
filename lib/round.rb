@@ -51,7 +51,6 @@ class Round
   def intelligent_guesses(first_guess, height, width)
     hits_by_computer = 0
     computer_guess = first_guess
-    players_board_cells = @board_player.cells.keys
     players_board_cells -= [computer_guess]
     @board_player.cells[computer_guess].fire_upon
 
@@ -208,12 +207,14 @@ class Round
     # Displaying the Boards
     puts "=============COMPUTER BOARD=============\n"
     @board_computer.render_board(height, width)
+    puts "\n"
     puts "==============PLAYER BOARD==============\n"
     @board_player.render_board(height, width, true)
 
     hits_by_player = 0
     hits_by_computer = 0
     individual_ship_hit = 0
+    players_board_cells = @board_player.cells.keys
     until hits_by_player == 5 || hits_by_computer == 5
 
       # Player guesses square
@@ -236,26 +237,22 @@ class Round
 
       # computer guess
       # generate random guesses for squares
-      binding.pry # check for individual_ship_hit
-
-      if hits_by_computer == 0 || @computer_guess_result == "X"
-        players_board_cells = @board_player.cells.keys
+      if hits_by_computer == 0 || @computer_guess_result == "X" || individual_ship_hit == 0
         computer_guess = players_board_cells.sample
         players_board_cells -= [computer_guess]
         direction = "right"
       else
         until players_board_cells.include?(computer_guess) == true
-          binding.pry # check for individual_ship_hit
           if @computer_guess_result == "H" && direction == "right" && computer_guess[-1..1].to_i < width # made first hit, need to check all 4 sides
             next_guess_num = computer_guess[1..-1].to_i + 1 # from 2 to 3
             computer_guess = computer_guess[0] + next_guess_num.to_s # "C3"
           elsif @computer_guess_result == "H" && direction == "right" && computer_guess[-1..1].to_i == width # last hit was an H; moving right; but at edge of board
             direction = "left"
-            next_guess_num = computer_guess[1..-1].to_i - (individual_ship_hit + 1) # from 2 to 1
+            next_guess_num = computer_guess[1..-1].to_i - individual_ship_hit  # from 2 to 1
             computer_guess = computer_guess[0] + next_guess_num.to_s #"C1"
           elsif @computer_guess_result == "M" && direction == "right"
             direction = "left"
-            next_guess_num = computer_guess[1..-1].to_i - 2 # from 2 to 1
+            next_guess_num = computer_guess[1..-1].to_i - (individual_ship_hit + 1)# from 2 to 1
             computer_guess = computer_guess[0] + next_guess_num.to_s #"C1"
           elsif @computer_guess_result == "H" && direction == "left" && computer_guess[-1..1].to_i > 1
             next_guess_num = computer_guess[1..-1].to_i - 1 # from 2 to 1
@@ -270,7 +267,7 @@ class Round
             computer_guess = next_guess_letter.chr + computer_guess[1..-1]
           elsif @computer_guess_result == "H" && direction == "up" && computer_guess[0] == "A"
             direction = "down"
-            next_guess_letter = computer_guess[0].ord + 2 # C.ord = 67; 67-1 = 66
+            next_guess_letter = computer_guess[0].ord + individual_ship_hit # "A".ord = 65; 65+2 = 67 => "C"
             computer_guess = next_guess_letter.chr + computer_guess[1..-1]
           elsif @computer_guess_result == "M" && direction == "up" && computer_guess[0].ord - "A".ord + 1 < height
             direction = "down"
@@ -279,9 +276,14 @@ class Round
           elsif @computer_guess_result == "H" && direction == "down" && computer_guess[0].ord - "A".ord + 1 < height
             next_guess_letter = computer_guess[0].ord + 1 # C.ord = 67; 67-1 = 66
             computer_guess = next_guess_letter.chr + computer_guess[1..-1]
+          else
+            computer_guess = players_board_cells.sample
+            players_board_cells -= [computer_guess]
+            direction = "right"
           end
         end
-        players_board_cells -= [computer_guess] 
+        players_board_cells -= [computer_guess]
+        binding.pry
       end
 
     # Diplay Results
@@ -338,22 +340,23 @@ class Round
         individual_ship_hit += 1
       end
 
-      binding.pry
+      binding.pry #check players_board_cells
       # Displaying the Boards
-      puts "=============COMPUTER BOARD=============\n"
+      puts "\n=============COMPUTER BOARD=============\n"
       @board_computer.render_board(height, width)
-      "\n"
+      puts "\n"
       puts "==============PLAYER BOARD==============\n"
       @board_player.render_board(height, width, true)
-      "\n"
+      puts "\n"
     end
 
     # if player hits = 5, then puts "You won"
     # if computer hits = 5, then puts "I won"
     if hits_by_player == 5
-      puts "You won :("
+      puts "You won :(\n"
     elsif hits_by_computer == 5
-      puts "I won!"
+      puts "I won!\n"
+      puts "\n"
     end
 
     start
